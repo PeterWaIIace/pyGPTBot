@@ -1,5 +1,12 @@
 # pyGPTBot
-Wrapper python package around gpt for chatBot
+Wrapper python package around gpt3 for chatBot.
+
+## Features:
+
+- Can remember conversation 
+- Its memmory is adjustable by length of tokens in prompt
+- Easy to use
+- Can have personality [WIP]
 
 ## How to use:
 
