@@ -1,4 +1,4 @@
-# chatBot
+# pyGPTBot
 Wrapper python package around gpt for chatBot
 
 ## How to use:
