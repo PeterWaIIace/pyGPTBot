@@ -1,6 +1,12 @@
 # pyGPTBot
 Wrapper python package around gpt3 for chatBot.
 
+## Install:
+
+```
+pip install pyGPTBot
+```
+
 ## Features:
 
 - Can remember conversation 
