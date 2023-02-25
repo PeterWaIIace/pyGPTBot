@@ -3,22 +3,27 @@ import openai
 
 class ChatBot():
 
-    def __init__(self,botName,personalityFile="",tokenLimit=1000,organization="",apiKey=""):
+    def __init__(self,botName,personalityFile="",tokenLimit=1000,organization="",apiKey="",debug=False):
         config = {"organization":organization,"apiKey":apiKey}
+
+        self.debug = debug
         self.__init__OpenAIAPI(config)
 
         self.botName         = botName
-        self.tokenLimit      = 1000
+        self.tokenLimit      = tokenLimit
         self.personality     = ""
         self.prompt_buffer   = self.__remind()
         self.personalityFile = personalityFile
+        if self.loadPersonalityFile:
+            self.loadPersonalityFile()
 
         self.__helloFlag      = False
 
     def loadPersonalityFile(self):
-        if self.personalityFile:
-            with open(self.personalityFile,"r",encoding="utf-8") as f:
-                self.personality = f.read()
+        with open(self.personalityFile,"r",encoding="utf-8") as f:
+            self.personality = f.read()
+            if self.debug:
+                print(f"PERSONALITY:{self.personality}")
 
     def __memorize(self):
         with open(self.botName+".txt","w+",encoding="utf-8") as f:
@@ -34,7 +39,7 @@ class ChatBot():
 
     def __addToPrompt(self,prompt,username):
         # adding username
-        self.prompt_buffer += f"\n{username}:\n"
+        self.prompt_buffer += f"{username}:\n"
         self.prompt_buffer += prompt
 
         if len(self.prompt_buffer)/4 > self.tokenLimit:
@@ -69,7 +74,12 @@ class ChatBot():
 
         message = self.__addToPrompt(message,"USER:")
         message += f"\n{self.botName}:\n"
-        response = self.__askOpenAI("This AI follows those rules: \""+self.personality+"\"\n\nConversation:\n"+ message+"\nAI:")
+
+        prompt = f"This AI follows those rules: \"{self.personality}\" \n\nConversation:\n"+ message+"AI:"
+        if self.debug:
+            print(f"SENDING PROMPT:\n{prompt}")
+
+        response = self.__askOpenAI(prompt)
         self.__addToPrompt(response,"AI:")
         self.__memorize()
         # self.update_file("gpt",response)
