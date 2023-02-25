@@ -39,7 +39,7 @@ class ChatBot():
 
     def __addToPrompt(self,prompt,username):
         # adding username
-        self.prompt_buffer += f"{username}:\n"
+        self.prompt_buffer += f"\n{username}:\n"
         self.prompt_buffer += prompt
 
         if len(self.prompt_buffer)/4 > self.tokenLimit:
@@ -72,15 +72,15 @@ class ChatBot():
 
     def ask(self,message):
 
-        message = self.__addToPrompt(message,"USER:")
+        message = self.__addToPrompt(message,"USER")
         message += f"\n{self.botName}:\n"
 
-        prompt = f"This AI follows those rules: \"{self.personality}\" \n\nConversation:\n"+ message+"AI:"
+        prompt = f"This AI follows those rules: \"{self.personality}\" \n\nConversation:\n"+ message+"\nAI:"
         if self.debug:
             print(f"SENDING PROMPT:\n{prompt}")
 
         response = self.__askOpenAI(prompt)
-        self.__addToPrompt(response,"AI:")
+        self.__addToPrompt(response,"AI")
         self.__memorize()
         # self.update_file("gpt",response)
 
