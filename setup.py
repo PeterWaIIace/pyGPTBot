@@ -1,6 +1,6 @@
 from setuptools import setup
 setup(name="pyGPTBot",
-    version="0.0.1",
+    version="0.0.2",
     author="W4ltz",
     author_email="walas.piotr.prywatny@gmail.com",
     python_requires=">=3.6",
