@@ -73,14 +73,12 @@ class ChatBot():
     def ask(self,message):
 
         message = self.__addToPrompt(message,"USER")
-        message += f"\n{self.botName}:\n"
-
-        prompt = f"This AI follows those rules: \"{self.personality}\" \n\nConversation:\n"+ message+"AI:"
+        prompt = f"This AI follows those rules:\"{self.personality}\"\n\nConversation:\n{message}\n{self.botName}:\n"
         if self.debug:
             print(f"SENDING PROMPT:\n{prompt}")
 
         response = self.__askOpenAI(prompt)
-        self.__addToPrompt(response,"AI")
+        self.__addToPrompt(response,f"{self.botName}")
         self.__memorize()
         # self.update_file("gpt",response)
 
