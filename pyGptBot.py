@@ -67,7 +67,7 @@ class ChatBot():
 
     def ask(self,message):
 
-        message = self.__addToPrompt(message,"User:")
+        message = self.__addToPrompt(message,"USER:")
         message += f"\n{self.botName}:\n"
         response = self.__askOpenAI("This AI follows those rules: \""+self.personality+"\"\n\nConversation:\n"+ message)
         self.__addToPrompt(response,"AI:")
