@@ -75,7 +75,7 @@ class ChatBot():
         message = self.__addToPrompt(message,"USER")
         message += f"\n{self.botName}:\n"
 
-        prompt = f"This AI follows those rules: \"{self.personality}\" \n\nConversation:\n"+ message+"\nAI:"
+        prompt = f"This AI follows those rules: \"{self.personality}\" \n\nConversation:\n"+ message+"AI:"
         if self.debug:
             print(f"SENDING PROMPT:\n{prompt}")
 
