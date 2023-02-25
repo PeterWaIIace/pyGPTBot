@@ -67,10 +67,10 @@ class ChatBot():
 
     def ask(self,message):
 
-        message = self.__addToPrompt(message,"telegram")
-        message += "\n{self.botName}:\n"
-        response = self.__askOpenAI(self.personality+"\n\nConversation:\n"+ message)
-        self.__addToPrompt(response,"Jarvis")
+        message = self.__addToPrompt(message,"User:")
+        message += f"\n{self.botName}:\n"
+        response = self.__askOpenAI("This AI follows those rules: \""+self.personality+"\"\n\nConversation:\n"+ message)
+        self.__addToPrompt(response,"AI:")
         self.__memorize()
         # self.update_file("gpt",response)
 
