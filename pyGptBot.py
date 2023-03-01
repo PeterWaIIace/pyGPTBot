@@ -19,6 +19,9 @@ class ChatBot():
 
         self.__helloFlag      = False
 
+    def loadModelParams(self):
+        pass
+
     def loadPersonalityFile(self):
         with open(self.personalityFile,"r",encoding="utf-8") as f:
             self.personality = f.read()
@@ -56,7 +59,7 @@ class ChatBot():
         ret_completion = openai.Completion.create(
             model="text-davinci-003",
             prompt=message,
-            temperature=0.5,
+            temperature=0.75,
             max_tokens=256,
             top_p=1,
             frequency_penalty=0,
@@ -70,9 +73,9 @@ class ChatBot():
             response = self.ask("hello")
             return response
 
-    def ask(self,message):
+    def ask(self,message,user="USER"):
 
-        message = self.__addToPrompt(message,"USER")
+        message = self.__addToPrompt(message,F"{user}")
         prompt = f"This AI follows those rules:\"{self.personality}\"\n\nConversation:\n{message}\n{self.botName}:\n"
         if self.debug:
             print(f"SENDING PROMPT:\n{prompt}")
