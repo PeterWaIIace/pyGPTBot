@@ -7,8 +7,8 @@ class ChatBot():
         config = {"organization":organization,"apiKey":apiKey}
 
         self.debug = debug
-        self.__init__OpenAIAPI(config)
 
+        self.__init__OpenAIAPI(config)
         self.gpt_3_5         = gpt_3_5
         self.botName         = botName
         self.tokenLimit      = tokenLimit
@@ -32,22 +32,22 @@ class ChatBot():
 
     def __memorize(self):
         with open(self.botName+".json","w+",encoding="utf-8") as f:
-            json.dump(self.prompt_buffer,f)
+            json.dump({"conversation":self.prompt_buffer},f)
 
     def __remind(self):
         filename = self.botName+".json"
-        prompt_buffer = ""
+        prompt_buffer = []
         if exists(filename):
             with open(self.botName+".json","r", encoding="utf-8") as f:
-                prompt_buffer = json.load(f)
+                prompt_buffer = json.load(f)["conversation"]
         return prompt_buffer
 
     def __addToPrompt(self,prompt,username):
         # adding username
-        msg = { "role ": username , "content" : prompt}
+        msg = { "role": username , "content" : prompt}
         self.prompt_buffer.append(msg)
 
-        while self.prompt_buffer > self.buffer_limit:
+        while len(self.prompt_buffer) > self.buffer_limit:
             self.prompt_buffer.pop(0)
 
         return self.prompt_buffer
@@ -71,8 +71,10 @@ class ChatBot():
 
         prompt = ""
         for message in promptBuffer[::-1]:
-            prompt += f"{message['role']}:\n"
-            prompt += f"{message['content']}:\n"
+            role=message["role"]
+            content = message["content"]
+            prompt += f"{role}:\n"
+            prompt += f"{content}:\n"
 
         if len(prompt) > self.tokenLimit:
             prompt = prompt[len(prompt)-self.tokenLimit:]
@@ -96,20 +98,22 @@ class ChatBot():
             frequency_penalty=0,
             presence_penalty=0
         )
-        return ret_completion["choices"][0]["text"]
+        return ret_completion["choices"][0]["message"]
 
     def __askChatGPT(self, promptBuffer):
         prompt = self.__prepareForChatGPT(promptBuffer)
-        ret_completion = openai.Completion.create(
+        print(prompt)
+        ret_completion = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
-            prompt=prompt,
+            messages=prompt,
             temperature=0.75,
             max_tokens=512,
             top_p=1,
             frequency_penalty=0,
             presence_penalty=0
         )
-        return ret_completion["choices"][0]["text"]
+        print(ret_completion)
+        return ret_completion["choices"][0]["message"]["content"]
 
     def ask(self,message,user="USER"):
 
@@ -118,7 +122,10 @@ class ChatBot():
         if self.debug:
             print(f"SENDING PROMPT:\n{self.promptBuffer}")
 
-        response = self.__askGPT(self.promptBuffer)
+        if self.gpt_3_5:
+            response = self.__askChatGPT(self.promptBuffer)
+        else:
+            response = self.__askGPT(self.promptBuffer)
         self.promptBuffer = self.__addToPrompt(response,f"{self.botName}")
         self.__memorize()
         # self.update_file("gpt",response)
